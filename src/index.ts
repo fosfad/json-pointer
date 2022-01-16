@@ -1,4 +1,4 @@
-export { JsonPointer } from './jsonPointer';
+export { JsonPointer, InvalidPointerSyntax } from './jsonPointer';
 export {
   PointerReferencesNonexistentValue,
   resolveJsonPointer,
