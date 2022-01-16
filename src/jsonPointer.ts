@@ -12,7 +12,7 @@ export class InvalidPointerSyntax extends Error {
 
 export class JsonPointer {
   public constructor(
-    public readonly referenceTokens: Array<string | number>,
+    public readonly referenceTokens: Array<number | string>,
     public readonly usesUriFragmentIdentifierRepresentation: boolean,
   ) {}
 
@@ -25,7 +25,7 @@ export class JsonPointer {
 
     const referenceTokens = jsonPointer
       .split('/')
-      .map((referenceToken): string | number => {
+      .map((referenceToken): number | string => {
         if (isUnsignedNumeric(referenceToken)) {
           return parseInt(referenceToken, 10);
         }

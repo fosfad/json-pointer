@@ -1,6 +1,6 @@
 import { JsonPointer } from './jsonPointer';
 
-type Json = boolean | number | string | null | JsonArray | JsonObject;
+type Json = JsonArray | JsonObject | boolean | number | string | null;
 type JsonArray = Array<Json>;
 type JsonObject = { [property: string]: Json };
 
