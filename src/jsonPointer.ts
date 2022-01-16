@@ -19,7 +19,11 @@ export class JsonPointer {
   public static createFromString = (jsonPointer: string): JsonPointer => {
     const usesUriFragmentIdentifierRepresentation = jsonPointer.startsWith('#');
 
-    if (!jsonPointer.startsWith('#') && !jsonPointer.startsWith('/')) {
+    if (
+      jsonPointer.length > 0 &&
+      !jsonPointer.startsWith('#') &&
+      !jsonPointer.startsWith('/')
+    ) {
       throw new InvalidPointerSyntax(jsonPointer);
     }
 
