@@ -3,7 +3,7 @@
   "description": "TypeScript implementation for JavaScript Object Notation (JSON) Pointer (RFC 6901), also known as JSON Pointer.",
   "repository": "github:fosfad/json-pointer",
   "files": [
-    "./dist/"
+    "/dist/src/"
   ],
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
