@@ -7,6 +7,7 @@ jobs:
     name: Jest (Node.js ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: [15, 16, 17]
 
