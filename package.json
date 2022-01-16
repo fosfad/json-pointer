@@ -6,7 +6,7 @@
     "/dist/src/"
   ],
   "main": "dist/src/index.js",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "author": {
     "email": "petr@flaks.dev",
     "name": "Petr Flaks"
