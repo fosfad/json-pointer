@@ -16,6 +16,9 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "lib": ["ES2021"],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist"
   }
 }
