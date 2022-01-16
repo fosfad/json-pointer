@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/fosfad/json-pointer",
   "engines": {
-    "node": ">=15"
+    "node": ">=16"
   },
   "devDependencies": {
     "@types/jest": "27.4.0",
