@@ -29,10 +29,11 @@ export const resolveJsonPointer = (
 
       // check is array
       if (
-        typeof referenceToken === 'number' &&
+        /^(?:0|[1-9][0-9]*)$/.test(referenceToken) &&
         Array.isArray(currentlyReferencedValue)
       ) {
-        foundReferencedValue = currentlyReferencedValue[referenceToken];
+        foundReferencedValue =
+          currentlyReferencedValue[parseInt(referenceToken, 10)];
       }
 
       // check is object

@@ -1,7 +1,3 @@
-function isUnsignedNumeric(value: string): boolean {
-  return /^[0-9]+$/.test(value);
-}
-
 export class InvalidPointerSyntax extends Error {
   constructor() {
     super(`JSON Pointer has invalid pointer syntax`);
@@ -12,7 +8,7 @@ export class InvalidPointerSyntax extends Error {
 
 export class JsonPointer {
   public constructor(
-    public readonly referenceTokens: Array<number | string>,
+    public readonly referenceTokens: Array<string>,
     public readonly usesUriFragmentIdentifierRepresentation: boolean,
   ) {}
 
@@ -35,11 +31,7 @@ export class JsonPointer {
 
     const referenceTokens = jsonPointer
       .split('/')
-      .map((referenceToken): number | string => {
-        if (isUnsignedNumeric(referenceToken)) {
-          return parseInt(referenceToken, 10);
-        }
-
+      .map((referenceToken): string => {
         if (usesUriFragmentIdentifierRepresentation) {
           referenceToken = decodeURI(referenceToken);
         }
@@ -56,16 +48,12 @@ export class JsonPointer {
   public toString = (): string => {
     const jsonPointer = this.referenceTokens
       .map((referenceToken): string => {
-        if (typeof referenceToken === 'string') {
-          referenceToken = referenceToken
-            .replaceAll('~', '~0')
-            .replaceAll('/', '~1');
+        referenceToken = referenceToken
+          .replaceAll('~', '~0')
+          .replaceAll('/', '~1');
 
-          if (this.usesUriFragmentIdentifierRepresentation) {
-            referenceToken = encodeURI(referenceToken);
-          }
-        } else {
-          referenceToken = referenceToken.toString();
+        if (this.usesUriFragmentIdentifierRepresentation) {
+          referenceToken = encodeURI(referenceToken);
         }
 
         return referenceToken;
