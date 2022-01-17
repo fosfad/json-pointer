@@ -23,18 +23,11 @@ export const resolveJsonPointer = (
 ): Json => {
   let currentlyReferencedValue = json;
 
-  if (
-    jsonPointer.referenceTokens.length === 1 &&
-    jsonPointer.referenceTokens[0] === ''
-  ) {
-    return currentlyReferencedValue;
-  }
-
-  jsonPointer.referenceTokens
-    .slice(1)
-    .forEach((referenceToken, referenceTokenIndex): void => {
+  jsonPointer.referenceTokens.forEach(
+    (referenceToken, referenceTokenIndex): void => {
       let foundReferencedValue: Json | undefined;
 
+      // check is array
       if (
         typeof referenceToken === 'number' &&
         Array.isArray(currentlyReferencedValue)
@@ -42,14 +35,15 @@ export const resolveJsonPointer = (
         foundReferencedValue = currentlyReferencedValue[referenceToken];
       }
 
+      // check is object
       if (
         currentlyReferencedValue !== null &&
         typeof currentlyReferencedValue === 'object' &&
+        !Array.isArray(currentlyReferencedValue) &&
         Object.prototype.hasOwnProperty.call(
           currentlyReferencedValue,
           referenceToken,
-        ) &&
-        !Array.isArray(currentlyReferencedValue)
+        )
       ) {
         foundReferencedValue = currentlyReferencedValue[referenceToken];
       }
@@ -58,14 +52,15 @@ export const resolveJsonPointer = (
         throw new PointerReferencesNonexistentValue(
           jsonPointer,
           new JsonPointer(
-            jsonPointer.referenceTokens.slice(0, referenceTokenIndex),
+            jsonPointer.referenceTokens.slice(0, referenceTokenIndex + 1),
             jsonPointer.usesUriFragmentIdentifierRepresentation,
           ),
         );
       }
 
       currentlyReferencedValue = foundReferencedValue;
-    });
+    },
+  );
 
   return currentlyReferencedValue;
 };

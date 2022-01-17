@@ -3,8 +3,8 @@ function isUnsignedNumeric(value: string): boolean {
 }
 
 export class InvalidPointerSyntax extends Error {
-  constructor(public readonly invalidPointer: string) {
-    super(`JSON Pointer ${invalidPointer} has invalid pointer syntax`);
+  constructor() {
+    super(`JSON Pointer has invalid pointer syntax`);
 
     Object.setPrototypeOf(this, InvalidPointerSyntax.prototype);
   }
@@ -19,13 +19,19 @@ export class JsonPointer {
   public static createFromString = (jsonPointer: string): JsonPointer => {
     const usesUriFragmentIdentifierRepresentation = jsonPointer.startsWith('#');
 
-    if (
-      jsonPointer.length > 0 &&
-      !jsonPointer.startsWith('#') &&
-      !jsonPointer.startsWith('/')
-    ) {
-      throw new InvalidPointerSyntax(jsonPointer);
+    if (usesUriFragmentIdentifierRepresentation) {
+      jsonPointer = jsonPointer.substring(1);
     }
+
+    if (jsonPointer.length === 0) {
+      return new JsonPointer([], usesUriFragmentIdentifierRepresentation);
+    }
+
+    if (!jsonPointer.startsWith('/')) {
+      throw new InvalidPointerSyntax();
+    }
+
+    jsonPointer = jsonPointer.substring(1);
 
     const referenceTokens = jsonPointer
       .split('/')
@@ -40,10 +46,6 @@ export class JsonPointer {
 
         return referenceToken.replaceAll('~1', '/').replaceAll('~0', '~');
       });
-
-    if (usesUriFragmentIdentifierRepresentation) {
-      referenceTokens[0] = '';
-    }
 
     return new JsonPointer(
       referenceTokens,
@@ -71,9 +73,9 @@ export class JsonPointer {
       .join('/');
 
     if (this.usesUriFragmentIdentifierRepresentation) {
-      return '#' + jsonPointer;
+      return '#/' + jsonPointer;
     }
 
-    return jsonPointer;
+    return '/' + jsonPointer;
   };
 }
