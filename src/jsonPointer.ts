@@ -1,69 +1,101 @@
 export class InvalidPointerSyntax extends Error {
-  constructor() {
-    super(`JSON Pointer has invalid pointer syntax`);
+  constructor(public readonly invalidJsonPointer: string) {
+    super(`JSON Pointer ${invalidJsonPointer} has invalid pointer syntax`);
 
     Object.setPrototypeOf(this, InvalidPointerSyntax.prototype);
   }
 }
 
-export class JsonPointer {
-  public constructor(
-    public readonly referenceTokens: Array<string>,
-    public readonly usesUriFragmentIdentifierRepresentation: boolean,
-  ) {}
+export type JsonPointer = {
+  referenceTokens: Array<string>;
+  uriFragmentIdentifierRepresentation: boolean;
+};
 
-  public static createFromString = (jsonPointer: string): JsonPointer => {
-    const usesUriFragmentIdentifierRepresentation = jsonPointer.startsWith('#');
+export const parseJsonPointerFromString = (
+  jsonPointerString: string,
+): JsonPointer => {
+  let jsonPointer = jsonPointerString;
 
-    if (usesUriFragmentIdentifierRepresentation) {
-      jsonPointer = jsonPointer.substring(1);
-    }
+  const uriFragmentIdentifierRepresentation = jsonPointerString.startsWith('#');
 
-    if (jsonPointer.length === 0) {
-      return new JsonPointer([], usesUriFragmentIdentifierRepresentation);
-    }
+  if (uriFragmentIdentifierRepresentation) {
+    jsonPointer = jsonPointer.substring(1); // remove `#` symbol from beginning of the string
+  }
 
-    if (!jsonPointer.startsWith('/')) {
-      throw new InvalidPointerSyntax();
-    }
+  if (jsonPointer.length === 0) {
+    return {
+      referenceTokens: [],
+      uriFragmentIdentifierRepresentation,
+    };
+  }
 
-    jsonPointer = jsonPointer.substring(1);
+  if (!jsonPointer.startsWith('/')) {
+    throw new InvalidPointerSyntax(jsonPointer);
+  }
 
-    const referenceTokens = jsonPointer
-      .split('/')
-      .map((referenceToken): string => {
-        if (usesUriFragmentIdentifierRepresentation) {
-          referenceToken = decodeURI(referenceToken);
-        }
+  const referenceTokens = jsonPointer
+    .substring(1) // remove `/` symbol from beginning of the string
+    .split('/')
+    .map((referenceToken): string => {
+      return escapeReferenceToken(
+        referenceToken,
+        uriFragmentIdentifierRepresentation,
+      );
+    });
 
-        return referenceToken.replaceAll('~1', '/').replaceAll('~0', '~');
-      });
-
-    return new JsonPointer(
-      referenceTokens,
-      usesUriFragmentIdentifierRepresentation,
-    );
+  return {
+    referenceTokens,
+    uriFragmentIdentifierRepresentation,
   };
+};
 
-  public toString = (): string => {
-    const jsonPointer = this.referenceTokens
+export const createStringFromJsonPointer = (
+  jsonPointer: JsonPointer,
+): string => {
+  const jsonPointerString =
+    '/' +
+    jsonPointer.referenceTokens
       .map((referenceToken): string => {
-        referenceToken = referenceToken
-          .replaceAll('~', '~0')
-          .replaceAll('/', '~1');
-
-        if (this.usesUriFragmentIdentifierRepresentation) {
-          referenceToken = encodeURI(referenceToken);
-        }
-
-        return referenceToken;
+        return unescapeReferenceToken(
+          referenceToken,
+          jsonPointer.uriFragmentIdentifierRepresentation,
+        );
       })
       .join('/');
 
-    if (this.usesUriFragmentIdentifierRepresentation) {
-      return '#/' + jsonPointer;
-    }
+  if (jsonPointer.uriFragmentIdentifierRepresentation) {
+    return '#' + jsonPointerString;
+  }
 
-    return '/' + jsonPointer;
-  };
-}
+  return jsonPointerString;
+};
+
+export const escapeReferenceToken = (
+  referenceToken: string,
+  uriFragmentIdentifierRepresentation: boolean,
+): string => {
+  let escapedReferenceToken = referenceToken
+    .replaceAll('~1', '/')
+    .replaceAll('~0', '~');
+
+  if (uriFragmentIdentifierRepresentation) {
+    escapedReferenceToken = decodeURIComponent(escapedReferenceToken);
+  }
+
+  return escapedReferenceToken;
+};
+
+export const unescapeReferenceToken = (
+  referenceToken: string,
+  uriFragmentIdentifierRepresentation: boolean,
+): string => {
+  let unescapedReferenceToken = referenceToken
+    .replaceAll('~', '~0')
+    .replaceAll('/', '~1');
+
+  if (uriFragmentIdentifierRepresentation) {
+    unescapedReferenceToken = encodeURIComponent(unescapedReferenceToken);
+  }
+
+  return unescapedReferenceToken;
+};

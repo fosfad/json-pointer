@@ -1,8 +1,11 @@
 import {
   PointerReferencesNonexistentValue,
-  resolveJsonPointer,
-} from '../src/jsonPointerResolver';
-import { JsonPointer } from '../src/jsonPointer';
+  getValueByJsonPointer,
+} from '../src/jsonPointerProcessor';
+import {
+  createStringFromJsonPointer,
+  parseJsonPointerFromString,
+} from '../src/jsonPointer';
 
 /**
  * Following test cases were taken from {@link https://datatracker.ietf.org/doc/html/rfc6901 | JavaScript Object Notation (JSON) Pointer (RFC 6901) specification}.
@@ -39,9 +42,9 @@ describe('Positive test cases from the specification', () => {
     ['/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
     expect(
-      resolveJsonPointer(
+      getValueByJsonPointer(
         jsonHaystack,
-        JsonPointer.createFromString(absoluteJsonPointer),
+        parseJsonPointerFromString(absoluteJsonPointer),
       ),
     ).toEqual(expectedValue);
   });
@@ -64,9 +67,9 @@ describe('Positive test cases from the specification', () => {
     ['#/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
     expect(
-      resolveJsonPointer(
+      getValueByJsonPointer(
         jsonHaystack,
-        JsonPointer.createFromString(absoluteJsonPointer),
+        parseJsonPointerFromString(absoluteJsonPointer),
       ),
     ).toEqual(expectedValue);
   });
@@ -89,9 +92,9 @@ describe('Custom test cases', () => {
       ['/foo/5', 'baz'],
     ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
       expect(
-        resolveJsonPointer(
+        getValueByJsonPointer(
           jsonHaystack,
-          JsonPointer.createFromString(absoluteJsonPointer),
+          parseJsonPointerFromString(absoluteJsonPointer),
         ),
       ).toEqual(expectedValue);
     });
@@ -105,13 +108,16 @@ describe('Custom test cases', () => {
       ['/foo/-1', '/foo/-1'],
       ['/foo/', '/foo/'],
       ['/foo/bar/baz', '/foo/bar'],
+      ['/prototype', '/prototype'],
+      ['/constructor', '/constructor'],
+      ['/__proto__', '/__proto__'],
     ])(
       'JSON Pointer `%s`',
       (absoluteJsonPointer, nonexistentValueJsonPointer) => {
         try {
-          resolveJsonPointer(
+          getValueByJsonPointer(
             jsonHaystack,
-            JsonPointer.createFromString(absoluteJsonPointer),
+            parseJsonPointerFromString(absoluteJsonPointer),
           );
         } catch (error: unknown) {
           // eslint-disable-next-line jest/no-conditional-expect
@@ -119,21 +125,16 @@ describe('Custom test cases', () => {
 
           if (error instanceof PointerReferencesNonexistentValue) {
             // eslint-disable-next-line jest/no-conditional-expect
-            expect(error.jsonPointer.toString()).toBe(absoluteJsonPointer);
+            expect(createStringFromJsonPointer(error.jsonPointer)).toBe(
+              absoluteJsonPointer,
+            );
 
             // eslint-disable-next-line jest/no-conditional-expect
-            expect(error.nonexistentValueJsonPointer.toString()).toBe(
-              nonexistentValueJsonPointer,
-            );
+            expect(
+              createStringFromJsonPointer(error.nonexistentValueJsonPointer),
+            ).toBe(nonexistentValueJsonPointer);
           }
         }
-
-        expect(() => {
-          resolveJsonPointer(
-            jsonHaystack,
-            JsonPointer.createFromString(absoluteJsonPointer),
-          );
-        }).toThrow(PointerReferencesNonexistentValue);
       },
     );
   });

@@ -1,5 +1,12 @@
-export { JsonPointer, InvalidPointerSyntax } from './jsonPointer';
+export {
+  JsonPointer,
+  InvalidPointerSyntax,
+  parseJsonPointerFromString,
+  createStringFromJsonPointer,
+  escapeReferenceToken,
+  unescapeReferenceToken,
+} from './jsonPointer';
 export {
   PointerReferencesNonexistentValue,
-  resolveJsonPointer,
-} from './jsonPointerResolver';
+  getValueByJsonPointer,
+} from './jsonPointerProcessor';
