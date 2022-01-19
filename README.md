@@ -20,14 +20,16 @@ npm install @fosfad/json-pointer
 
 The package exposes `JsonPointer` type. It's simple object with only 2 fields:
 
-- `referenceTokens` (array of strings) - reference tokens, also known as path segments. If array is empty, it represents entire JSON document.
+- `referenceTokens` (array of strings) - reference tokens separated by a `/` character, also known as path segments. Empty array means JSON Pointer points to the whole document
 - `uriFragmentIdentifierRepresentation` (boolean) - does this JSON Pointer use URI Fragment Identifier Representation. If value is `true`, JSON Pointer string representation will be prepended with `#` and percent-encoding will be applied to some characters.
 
 There is no need to build this object manually, there are some helper functions described below.
 
 #### `parseJsonPointerFromString` function
 
-It parses input string into `JsonPointer` object. Passing invalid string to the method will result into `InvalidPointerSyntax` error.
+Parses input string into `JsonPointer` object.
+
+Passing invalid string to the method will result into `InvalidPointerSyntax` error.
 
 Usage examples:
 
@@ -51,7 +53,7 @@ console.log(jsonPointer.usesUriFragmentIdentifierRepresentation); // Output: tru
 
 #### `createStringFromJsonPointer` function
 
-It creates a string from `JsonPointer` object.
+Creates a string from `JsonPointer` object.
 
 Usage examples:
 
@@ -153,11 +155,13 @@ console.log(unescapedReferenceToken3); // Output: hello/world
 
 ### Processing JSON documents
 
-Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures, like those returned by [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) method. If these functions will meet [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined), [`Function`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) or [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) types or [`Infinity`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity) and [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) numbers, then behavior is not clear because these types and values are not explicitly supported by the library. It may be changed in the future, so you may [create an issue](https://github.com/fosfad/json-pointer/issues) describing your use case why you and others may need it.
+Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures, like those returned by [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) method. If these functions meet [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined), [`Function`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) or [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) types or [`Infinity`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity) and [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) numbers, then behavior is not clear because these types and values are not explicitly supported by the library. It may be changed in the future, so you may [create an issue](https://github.com/fosfad/json-pointer/issues) describing your use case why you and others may need it.
 
 #### `getValueByJsonPointer` function
 
-This method allows you to resolve JSON Pointer references. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns JSON value resolved by given Pointer. If JSON Pointer references a nonexistent value, `PointerReferencesNonexistentValue` error will be thrown.
+Gets value from JSON by JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns JSON value resolved by given Pointer.
+
+If JSON Pointer references a nonexistent value, `PointerReferencesNonexistentValue` error will be thrown.
 
 Usage example:
 
