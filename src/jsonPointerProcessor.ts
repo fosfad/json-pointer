@@ -32,6 +32,24 @@ export class PointerReferencesNonexistentValue extends Error {
   }
 }
 
+/**
+ * Gets value from JSON by JSON Pointer.
+ *
+ * @remarks
+ *
+ * Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures,
+ * like those returned by `JSON.parse()` method. If these functions meet `undefined`, `Function`
+ * or `Symbol` types or `Infinity` and `NaN` numbers, then behavior is not clear
+ * because these types and values are not explicitly supported by the library. It may be changed in the future,
+ * so you may create an issue describing your use case why you and others may need it.
+ *
+ * @param json - JSON-like object you are searching in.
+ * @param jsonPointer - JSON Pointer string or object.
+ * @returns Referenced by JSON Pointer value.
+ *
+ * @throws PointerReferencesNonexistentValue
+ * If JSON Pointer references a nonexistent value.
+ */
 export const getValueByJsonPointer = (
   json: Json,
   jsonPointer: JsonPointer | string,
