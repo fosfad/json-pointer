@@ -7,6 +7,7 @@ export {
   unescapeReferenceToken,
 } from './jsonPointer';
 export {
+  Json,
   PointerReferencesNonexistentValue,
   getValueByJsonPointer,
 } from './jsonPointerProcessor';

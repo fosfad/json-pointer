@@ -4,7 +4,7 @@ import {
   parseJsonPointerFromString,
 } from './jsonPointer';
 
-type Json = JsonArray | JsonObject | boolean | number | string | null;
+export type Json = JsonArray | JsonObject | boolean | number | string | null;
 type JsonArray = Array<Json>;
 type JsonObject = { [property: string]: Json };
 
