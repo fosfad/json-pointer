@@ -33,7 +33,7 @@ export class PointerReferencesNonexistentValue extends Error {
 }
 
 /**
- * Gets value from JSON by JSON Pointer.
+ * Gets value from JSON at given JSON Pointer.
  *
  * @remarks
  *
