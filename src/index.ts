@@ -9,5 +9,5 @@ export {
 export {
   Json,
   PointerReferencesNonexistentValue,
-  getValueByJsonPointer,
+  getValueAtJsonPointer,
 } from './jsonPointerProcessor';
