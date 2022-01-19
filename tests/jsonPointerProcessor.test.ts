@@ -1,6 +1,6 @@
 import {
   PointerReferencesNonexistentValue,
-  getValueAtJsonPointer,
+  getValueAtJsonPointer, valueExistsAtJsonPointer,
 } from '../src/jsonPointerProcessor';
 import {
   createStringFromJsonPointer,
@@ -42,6 +42,13 @@ describe('Positive test cases from the specification', () => {
     ['/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
     expect(
+      valueExistsAtJsonPointer(
+        jsonHaystack,
+        parseJsonPointerFromString(absoluteJsonPointer),
+      ),
+    ).toBe(true);
+
+    expect(
       getValueAtJsonPointer(
         jsonHaystack,
         parseJsonPointerFromString(absoluteJsonPointer),
@@ -66,6 +73,13 @@ describe('Positive test cases from the specification', () => {
     ['#/%20', 7],
     ['#/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
+    expect(
+      valueExistsAtJsonPointer(
+        jsonHaystack,
+        parseJsonPointerFromString(absoluteJsonPointer),
+      ),
+    ).toBe(true);
+
     expect(
       getValueAtJsonPointer(
         jsonHaystack,
@@ -92,6 +106,13 @@ describe('Custom test cases', () => {
       ['/foo/5', 'baz'],
     ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
       expect(
+        valueExistsAtJsonPointer(
+          jsonHaystack,
+          parseJsonPointerFromString(absoluteJsonPointer),
+        ),
+      ).toBe(true);
+
+      expect(
         getValueAtJsonPointer(
           jsonHaystack,
           parseJsonPointerFromString(absoluteJsonPointer),
@@ -114,6 +135,13 @@ describe('Custom test cases', () => {
     ])(
       'JSON Pointer `%s`',
       (absoluteJsonPointer, nonexistentValueJsonPointer) => {
+        expect(
+          valueExistsAtJsonPointer(
+            jsonHaystack,
+            parseJsonPointerFromString(absoluteJsonPointer),
+          ),
+        ).toBe(false);
+
         try {
           getValueAtJsonPointer(
             jsonHaystack,
