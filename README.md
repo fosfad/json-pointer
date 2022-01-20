@@ -108,25 +108,17 @@ Usage examples:
 ```typescript
 import { escapeReferenceToken } from '@fosfad/json-pointer';
 
-const escapedReferenceToken1 = escapeReferenceToken('hello world', false);
-const escapedReferenceToken2 = escapeReferenceToken('hello~world', false);
-const escapedReferenceToken3 = escapeReferenceToken('hello/world', false);
-
-console.log(escapedReferenceToken1); // Output: hello world
-console.log(escapedReferenceToken2); // Output: hello~0world
-console.log(escapedReferenceToken3); // Output: hello~1world
+console.log(escapeReferenceToken('hello world', false)); // Output: hello world
+console.log(escapeReferenceToken('hello~world', false)); // Output: hello~0world
+console.log(escapeReferenceToken('hello/world', false)); // Output: hello~1world
 ```
 
 ```typescript
 import { escapeReferenceToken } from '@fosfad/json-pointer';
 
-const escapedReferenceToken1 = escapeReferenceToken('hello world', true);
-const escapedReferenceToken2 = escapeReferenceToken('hello~world', true);
-const escapedReferenceToken3 = escapeReferenceToken('hello/world', true);
-
-console.log(escapedReferenceToken1); // Output: hello%20world
-console.log(escapedReferenceToken2); // Output: hello~0world
-console.log(escapedReferenceToken3); // Output: hello~1world
+console.log(escapeReferenceToken('hello world', true)); // Output: hello%20world
+console.log(escapeReferenceToken('hello~world', true)); // Output: hello~0world
+console.log(escapeReferenceToken('hello/world', true)); // Output: hello~1world
 ```
 
 #### `unescapeReferenceToken` function
@@ -145,25 +137,17 @@ Usage examples:
 ```typescript
 import { unescapeReferenceToken } from '@fosfad/json-pointer';
 
-const unescapedReferenceToken1 = unescapeReferenceToken('hello%20world', false);
-const unescapedReferenceToken2 = unescapeReferenceToken('hello~0world', false);
-const unescapedReferenceToken3 = unescapeReferenceToken('hello~1world', false);
-
-console.log(unescapedReferenceToken1); // Output: hello%20world
-console.log(unescapedReferenceToken2); // Output: hello~world
-console.log(unescapedReferenceToken3); // Output: hello/world
+console.log(unescapeReferenceToken('hello%20world', false)); // Output: hello%20world
+console.log(unescapeReferenceToken('hello~0world', false)); // Output: hello~world
+console.log(unescapeReferenceToken('hello~1world', false)); // Output: hello/world
 ```
 
 ```typescript
 import { unescapeReferenceToken } from '@fosfad/json-pointer';
 
-const unescapedReferenceToken1 = unescapeReferenceToken('hello%20world', true);
-const unescapedReferenceToken2 = unescapeReferenceToken('hello~0world', true);
-const unescapedReferenceToken3 = unescapeReferenceToken('hello~1world', true);
-
-console.log(unescapedReferenceToken1); // Output: hello world
-console.log(unescapedReferenceToken2); // Output: hello~world
-console.log(unescapedReferenceToken3); // Output: hello/world
+console.log(unescapeReferenceToken('hello%20world', true)); // Output: hello world
+console.log(unescapeReferenceToken('hello~0world', true)); // Output: hello~world
+console.log(unescapeReferenceToken('hello~1world', true)); // Output: hello/world
 ```
 
 ### Processing JSON documents
@@ -176,7 +160,7 @@ Gets value from JSON by JSON Pointer. This method accepts JSON, JSON Pointer (it
 
 If JSON Pointer references a nonexistent value, `PointerReferencesNonexistentValue` error will be thrown.
 
-Usage example:
+Usage examples:
 
 ```typescript
 import {
@@ -194,15 +178,13 @@ const json = {
   },
 };
 
-console.log(getValueAtJsonPointer(json, '/')); // Output: { song: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] } }
+console.log(getValueAtJsonPointer(json, createStringFromJsonPointer('/song/tags/1'))); // Output: drone
+
+console.log(getValueAtJsonPointer(json, '')); // Output: { song: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] } }
 console.log(getValueAtJsonPointer(json, '/song')); // Output: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] }
 console.log(getValueAtJsonPointer(json, '/song')); // Output: State Azure
 console.log(getValueAtJsonPointer(json, '/song/tags')); // Output: [ 'ambient', 'drone' ]
 console.log(getValueAtJsonPointer(json, '/song/tags/1')); // Output: drone
-
-const jsonPointer = createStringFromJsonPointer('/song/tags/1');
-
-console.log(getValueAtJsonPointer(json, jsonPointer)); // Output: drone
 
 try {
   getValueAtJsonPointer(json, '/foo/bar');
@@ -220,7 +202,7 @@ try {
 
 Checks value exists in JSON at given JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns boolean that indicates does value exist or not.
 
-Usage example:
+Usage examples:
 
 ```typescript
 import {
@@ -238,11 +220,9 @@ const json = {
   },
 };
 
-const jsonPointer = createStringFromJsonPointer('/song/tags/1');
+console.log(valueExistsAtJsonPointer(json, createStringFromJsonPointer('/song/tags/1'))); // Output: true
 
-console.log(valueExistsAtJsonPointer(json, jsonPointer)); // Output: true
-
-console.log(valueExistsAtJsonPointer(json, '/')); // Output: true
+console.log(valueExistsAtJsonPointer(json, '')); // Output: true
 console.log(valueExistsAtJsonPointer(json, '/song')); // Output: true
 console.log(valueExistsAtJsonPointer(json, '/song')); // Output: true
 console.log(valueExistsAtJsonPointer(json, '/song/tags')); // Output: true
