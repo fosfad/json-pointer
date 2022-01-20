@@ -2,6 +2,8 @@
 
 This package contains TypeScript implementation for [JavaScript Object Notation (JSON) Pointer (RFC 6901)](https://datatracker.ietf.org/doc/html/rfc6901), also known as **JSON Pointer**. All features described by the specification are supported, both representations of JSON Pointer supported too: **JSON String Representation** and **URI Fragment Identifier Representation**.
 
+If you are looking for Relative JSON Pointer implementation, check out [@fosfad/relative-json-pointer](https://github.com/fosfad/relative-json-pointer) package.
+
 **At this moment the package is not stable.** We are thinking and experimenting with its design and API. Breaking changes are possible. Do not use it in production!
 
 # Usage
