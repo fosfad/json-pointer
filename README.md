@@ -90,7 +90,7 @@ Transformations made by the function in following order:
 1. `~` → `~0`
 2. `/` → `~1`
 
-If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-decoding with `decodeURIComponent` will be applied too.
+If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-decoding with `encodeURIComponent` will be applied too.
 
 Usage examples:
 
@@ -127,7 +127,7 @@ Transformations made by the function in following order:
 1. `~1` → `/`
 2. `~0` → `~`
 
-If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-encoding with `encodeURIComponent` will be applied too.
+If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-encoding with `decodeURIComponent` will be applied too.
 
 Usage examples:
 

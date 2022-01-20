@@ -63,7 +63,7 @@ export const parseJsonPointerFromString = (
     .substring(1) // remove `/` symbol from beginning of the string
     .split('/')
     .map((referenceToken): string => {
-      return escapeReferenceToken(
+      return unescapeReferenceToken(
         referenceToken,
         uriFragmentIdentifierRepresentation,
       );
@@ -86,7 +86,7 @@ export const createStringFromJsonPointer = (
 ): string => {
   let jsonPointerString = jsonPointer.referenceTokens
     .map((referenceToken): string => {
-      return unescapeReferenceToken(
+      return escapeReferenceToken(
         referenceToken,
         jsonPointer.uriFragmentIdentifierRepresentation,
       );
@@ -105,18 +105,18 @@ export const createStringFromJsonPointer = (
 };
 
 /**
- * Escapes reference token according to the specification.
+ * Unescapes reference token according to the specification.
  *
  * Transformations made by the function in following order:
  *
- * 1. `~` → `~0`
- * 2. `/` → `~1`
+ * 1. `~1` → `/`
+ * 2. `~0` → `~`
  *
  * @param referenceToken - One reference token (also known as path segment).
  * @param uriFragmentIdentifierRepresentation - Is `true`, percent-decoding with `decodeURIComponent` will be applied.
- * @returns Escaped reference token.
+ * @returns Unescaped reference token.
  */
-export const escapeReferenceToken = (
+export const unescapeReferenceToken = (
   referenceToken: string,
   uriFragmentIdentifierRepresentation: boolean,
 ): string => {
@@ -136,14 +136,14 @@ export const escapeReferenceToken = (
  *
  * Transformations made by the function in following order:
  *
- * 1. `~1` → `/`
- * 2. `~0` → `~`
+ * 1. `~` → `~0`
+ * 2. `/` → `~1`
  *
  * @param referenceToken - One reference token (also known as path segment).
  * @param uriFragmentIdentifierRepresentation - If `true`, percent-encoding with `encodeURIComponent` will be applied.
- * @returns Unescaped reference token.
+ * @returns Escaped reference token.
  */
-export const unescapeReferenceToken = (
+export const escapeReferenceToken = (
   referenceToken: string,
   uriFragmentIdentifierRepresentation: boolean,
 ): string => {
