@@ -69,9 +69,9 @@ describe('parseJsonPointerFromString function', () => {
       ['/k"l', ['k"l']],
       ['/ ', [' ']],
       ['/m~0n', ['m~n']],
-    ])('JSON Pointer `%s`', (jsonPointer, expectedValue) => {
+    ])('JSON Pointer `%s`', (jsonPointer, expectedReferenceTokens) => {
       expect(parseJsonPointerFromString(jsonPointer)).toEqual<JsonPointer>({
-        referenceTokens: expectedValue,
+        referenceTokens: expectedReferenceTokens,
         uriFragmentIdentifierRepresentation: false,
       });
     });
@@ -91,18 +91,18 @@ describe('parseJsonPointerFromString function', () => {
       ['#/k%22l', ['k"l']],
       ['#/%20', [' ']],
       ['#/m~0n', ['m~n']],
-    ])('JSON Pointer `%s`', (jsonPointer, expectedValue) => {
-      expect(parseJsonPointerFromString(jsonPointer)).toEqual<JsonPointer>({
-        referenceTokens: expectedValue,
+    ])('JSON Pointer `%s`', (jsonPointerString, expectedReferenceTokens) => {
+      expect(parseJsonPointerFromString(jsonPointerString)).toEqual<JsonPointer>({
+        referenceTokens: expectedReferenceTokens,
         uriFragmentIdentifierRepresentation: true,
       });
     });
   });
 
   describe('InvalidPointerSyntax error', () => {
-    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])('JSON Pointer `%s`', (jsonPointer) => {
+    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])('JSON Pointer `%s`', (jsonPointerString) => {
       expect(() => {
-        parseJsonPointerFromString(jsonPointer);
+        parseJsonPointerFromString(jsonPointerString);
       }).toThrowError(InvalidPointerSyntax);
     });
   });
@@ -123,13 +123,13 @@ describe('createStringFromJsonPointer function', () => {
       [['k"l'], '/k"l'],
       [[' '], '/ '],
       [['m~n'], '/m~0n'],
-    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointer) => {
+    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointerString) => {
       expect(
         createStringFromJsonPointer({
           referenceTokens,
           uriFragmentIdentifierRepresentation: false,
         }),
-      ).toBe(expectedJsonPointer);
+      ).toBe(expectedJsonPointerString);
     });
   });
 
@@ -147,13 +147,13 @@ describe('createStringFromJsonPointer function', () => {
       [['k"l'], '#/k%22l'],
       [[' '], '#/%20'],
       [['m~n'], '#/m~0n'],
-    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointer) => {
+    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointerString) => {
       expect(
         createStringFromJsonPointer({
           referenceTokens,
           uriFragmentIdentifierRepresentation: true,
         }),
-      ).toBe(expectedJsonPointer);
+      ).toBe(expectedJsonPointerString);
     });
   });
 });

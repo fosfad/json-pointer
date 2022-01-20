@@ -39,9 +39,9 @@ describe('Positive test cases from the specification', () => {
     ['/k"l', 6],
     ['/ ', 7],
     ['/m~0n', 8],
-  ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
-    expect(isValidJsonPointer(absoluteJsonPointer)).toBe(true);
-    expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(expectedValue);
+  ])('JSON Pointer `%s`', (jsonPointerString, expectedValue) => {
+    expect(isValidJsonPointer(jsonPointerString)).toBe(true);
+    expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString))).toEqual(expectedValue);
   });
 
   /**
@@ -60,9 +60,9 @@ describe('Positive test cases from the specification', () => {
     ['#/k%22l', 6],
     ['#/%20', 7],
     ['#/m~0n', 8],
-  ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
-    expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(true);
-    expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(expectedValue);
+  ])('JSON Pointer `%s`', (jsonPointerString, expectedValue) => {
+    expect(valueExistsAtJsonPointer(jsonHaystack, jsonPointerString)).toBe(true);
+    expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString))).toEqual(expectedValue);
   });
 });
 
@@ -81,11 +81,9 @@ describe('Custom test cases', () => {
     test.each<[string, unknown]>([
       ['/foo/1', 'bar'],
       ['/foo/5', 'baz'],
-    ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
-      expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(true);
-      expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(
-        expectedValue,
-      );
+    ])('JSON Pointer `%s`', (jsonPointerString, expectedValue) => {
+      expect(valueExistsAtJsonPointer(jsonHaystack, jsonPointerString)).toBe(true);
+      expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString))).toEqual(expectedValue);
     });
   });
 
@@ -100,18 +98,18 @@ describe('Custom test cases', () => {
       ['/prototype', '/prototype'],
       ['/constructor', '/constructor'],
       ['/__proto__', '/__proto__'],
-    ])('JSON Pointer `%s`', (absoluteJsonPointer, nonexistentValueJsonPointer) => {
-      expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(false);
+    ])('JSON Pointer `%s`', (jsonPointerString, nonexistentValueJsonPointerString) => {
+      expect(valueExistsAtJsonPointer(jsonHaystack, jsonPointerString)).toBe(false);
 
       const error = getError(() => {
-        getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer));
+        getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString));
       });
 
       expect(error).toBeInstanceOf(PointerReferencesNonexistentValue);
-      expect(error).toHaveProperty('jsonPointer', parseJsonPointerFromString(absoluteJsonPointer));
+      expect(error).toHaveProperty('jsonPointer', parseJsonPointerFromString(jsonPointerString));
       expect(error).toHaveProperty(
         'nonexistentValueJsonPointer',
-        parseJsonPointerFromString(nonexistentValueJsonPointer),
+        parseJsonPointerFromString(nonexistentValueJsonPointerString),
       );
     });
   });
