@@ -1,5 +1,6 @@
 import type { JsonPointer } from '../src/jsonPointer';
 import {
+  createStringFromJsonPointer,
   InvalidPointerSyntax,
   parseJsonPointerFromString,
 } from '../src/jsonPointer';
@@ -58,5 +59,55 @@ describe('parseJsonPointerFromString function', () => {
         }).toThrowError(InvalidPointerSyntax);
       },
     );
+  });
+});
+
+describe('createStringFromJsonPointer function', () => {
+  describe('JSON String Representation of JSON Pointers', () => {
+    test.each<[Array<string>, string]>([
+      [[], ''],
+      [['foo'], '/foo'],
+      [['foo', '0'], '/foo/0'],
+      [[''], '/'],
+      [['a/b'], '/a~1b'],
+      [['c%d'], '/c%d'],
+      [['e^f'], '/e^f'],
+      [['g|h'], '/g|h'],
+      [['i\\j'], '/i\\j'],
+      [['k"l'], '/k"l'],
+      [[' '], '/ '],
+      [['m~n'], '/m~0n'],
+    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointer) => {
+      expect(
+        createStringFromJsonPointer({
+          referenceTokens,
+          uriFragmentIdentifierRepresentation: false,
+        }),
+      ).toBe(expectedJsonPointer);
+    });
+  });
+
+  describe('URI Fragment Identifier Representation of JSON Pointers', () => {
+    test.each<[Array<string>, string]>([
+      [[], '#'],
+      [['foo'], '#/foo'],
+      [['foo', '0'], '#/foo/0'],
+      [[''], '#/'],
+      [['a/b'], '#/a~1b'],
+      [['c%d'], '#/c%25d'],
+      [['e^f'], '#/e%5Ef'],
+      [['g|h'], '#/g%7Ch'],
+      [['i\\j'], '#/i%5Cj'],
+      [['k"l'], '#/k%22l'],
+      [[' '], '#/%20'],
+      [['m~n'], '#/m~0n'],
+    ])('Reference tokens `%p`', (referenceTokens, expectedJsonPointer) => {
+      expect(
+        createStringFromJsonPointer({
+          referenceTokens,
+          uriFragmentIdentifierRepresentation: true,
+        }),
+      ).toBe(expectedJsonPointer);
+    });
   });
 });
