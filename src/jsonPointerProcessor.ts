@@ -54,16 +54,17 @@ export const getValueAtJsonPointer = (
   json: Json,
   jsonPointer: JsonPointer | string,
 ): Json => {
-  if (typeof jsonPointer === 'string') {
-    jsonPointer = parseJsonPointerFromString(jsonPointer);
-  }
+  const jsonPointerObject: JsonPointer =
+    typeof jsonPointer === 'string'
+      ? parseJsonPointerFromString(jsonPointer)
+      : jsonPointer;
 
   let currentlyReferencedValue = json;
 
   for (const [
     referenceTokenIndex,
     referenceToken,
-  ] of jsonPointer.referenceTokens.entries()) {
+  ] of jsonPointerObject.referenceTokens.entries()) {
     let foundReferencedValue: Json | undefined = undefined;
 
     // check is array
@@ -89,13 +90,13 @@ export const getValueAtJsonPointer = (
     }
 
     if (foundReferencedValue === undefined) {
-      throw new PointerReferencesNonexistentValue(jsonPointer, {
-        referenceTokens: jsonPointer.referenceTokens.slice(
+      throw new PointerReferencesNonexistentValue(jsonPointerObject, {
+        referenceTokens: jsonPointerObject.referenceTokens.slice(
           0,
           referenceTokenIndex + 1,
         ),
         uriFragmentIdentifierRepresentation:
-          jsonPointer.uriFragmentIdentifierRepresentation,
+          jsonPointerObject.uriFragmentIdentifierRepresentation,
       });
     }
 

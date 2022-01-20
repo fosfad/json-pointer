@@ -51,6 +51,7 @@
     "@typescript-eslint/sort-type-union-intersection-members": ["warn"],
     "import/no-cycle": "error",
     "no-constant-condition": ["error", { "checkLoops": false }],
+    "no-param-reassign": ["error"],
     "unused-imports/no-unused-imports": "warn",
     "unused-imports/no-unused-vars": "warn"
   },
