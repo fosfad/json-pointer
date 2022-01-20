@@ -1,5 +1,6 @@
 import { PointerReferencesNonexistentValue, getValueAtJsonPointer } from '../src/jsonPointerProcessor';
-import { createStringFromJsonPointer, parseJsonPointerFromString } from '../src/jsonPointer';
+import { parseJsonPointerFromString } from '../src/jsonPointer';
+import { getError } from './utils';
 
 /**
  * Following test cases were taken from {@link https://datatracker.ietf.org/doc/html/rfc6901 | JavaScript Object Notation (JSON) Pointer (RFC 6901) specification}.
@@ -93,20 +94,16 @@ describe('Custom test cases', () => {
       ['/constructor', '/constructor'],
       ['/__proto__', '/__proto__'],
     ])('JSON Pointer `%s`', (absoluteJsonPointer, nonexistentValueJsonPointer) => {
-      try {
+      const error = getError(() => {
         getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer));
-      } catch (error: unknown) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(error).toBeInstanceOf(PointerReferencesNonexistentValue);
+      });
 
-        if (error instanceof PointerReferencesNonexistentValue) {
-          // eslint-disable-next-line jest/no-conditional-expect
-          expect(createStringFromJsonPointer(error.jsonPointer)).toBe(absoluteJsonPointer);
-
-          // eslint-disable-next-line jest/no-conditional-expect
-          expect(createStringFromJsonPointer(error.nonexistentValueJsonPointer)).toBe(nonexistentValueJsonPointer);
-        }
-      }
+      expect(error).toBeInstanceOf(PointerReferencesNonexistentValue);
+      expect(error).toHaveProperty('jsonPointer', parseJsonPointerFromString(absoluteJsonPointer));
+      expect(error).toHaveProperty(
+        'nonexistentValueJsonPointer',
+        parseJsonPointerFromString(nonexistentValueJsonPointer),
+      );
     });
   });
 });
