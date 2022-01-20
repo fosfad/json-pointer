@@ -1,5 +1,9 @@
-import { PointerReferencesNonexistentValue, getValueAtJsonPointer } from '../src/jsonPointerProcessor';
-import { parseJsonPointerFromString } from '../src/jsonPointer';
+import {
+  PointerReferencesNonexistentValue,
+  getValueAtJsonPointer,
+  valueExistsAtJsonPointer,
+} from '../src/jsonPointerProcessor';
+import { isValidJsonPointer, parseJsonPointerFromString } from '../src/jsonPointer';
 import { getError } from './utils';
 
 /**
@@ -36,6 +40,7 @@ describe('Positive test cases from the specification', () => {
     ['/ ', 7],
     ['/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
+    expect(isValidJsonPointer(absoluteJsonPointer)).toBe(true);
     expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(expectedValue);
   });
 
@@ -56,6 +61,7 @@ describe('Positive test cases from the specification', () => {
     ['#/%20', 7],
     ['#/m~0n', 8],
   ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
+    expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(true);
     expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(expectedValue);
   });
 });
@@ -76,6 +82,7 @@ describe('Custom test cases', () => {
       ['/foo/1', 'bar'],
       ['/foo/5', 'baz'],
     ])('JSON Pointer `%s`', (absoluteJsonPointer, expectedValue) => {
+      expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(true);
       expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer))).toEqual(
         expectedValue,
       );
@@ -94,6 +101,8 @@ describe('Custom test cases', () => {
       ['/constructor', '/constructor'],
       ['/__proto__', '/__proto__'],
     ])('JSON Pointer `%s`', (absoluteJsonPointer, nonexistentValueJsonPointer) => {
+      expect(valueExistsAtJsonPointer(jsonHaystack, absoluteJsonPointer)).toBe(false);
+
       const error = getError(() => {
         getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(absoluteJsonPointer));
       });

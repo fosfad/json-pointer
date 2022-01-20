@@ -215,3 +215,38 @@ try {
   }
 }
 ```
+
+#### `valueExistsAtJsonPointer` function
+
+Checks value exists in JSON at given JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns boolean that indicates does value exist or not.
+
+Usage example:
+
+```typescript
+import {
+  JsonPointer,
+  createStringFromJsonPointer,
+  getValueAtJsonPointer,
+  PointerReferencesNonexistentValue,
+} from '@fosfad/json-pointer';
+
+const json = {
+  song: {
+    author: 'State Azure',
+    title: 'Fragments',
+    tags: ['ambient', 'drone'],
+  },
+};
+
+const jsonPointer = createStringFromJsonPointer('/song/tags/1');
+
+console.log(valueExistsAtJsonPointer(json, jsonPointer)); // Output: true
+
+console.log(valueExistsAtJsonPointer(json, '/')); // Output: true
+console.log(valueExistsAtJsonPointer(json, '/song')); // Output: true
+console.log(valueExistsAtJsonPointer(json, '/song')); // Output: true
+console.log(valueExistsAtJsonPointer(json, '/song/tags')); // Output: true
+console.log(valueExistsAtJsonPointer(json, '/song/tags/1')); // Output: true
+
+console.log(valueExistsAtJsonPointer(json, '/foo/bar')); // Output: false
+```

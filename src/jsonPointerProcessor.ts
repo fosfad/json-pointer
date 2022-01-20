@@ -78,3 +78,32 @@ export const getValueAtJsonPointer = (json: Json, jsonPointer: JsonPointer | str
 
   return currentlyReferencedValue;
 };
+
+/**
+ * Checks value exists in JSON at given JSON Pointer.
+ *
+ * @remarks
+ *
+ * Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures,
+ * like those returned by `JSON.parse()` method. If these functions meet `undefined`, `Function`
+ * or `Symbol` types or `Infinity` and `NaN` numbers, then behavior is not clear
+ * because these types and values are not explicitly supported by the library. It may be changed in the future,
+ * so you may create an issue describing your use case why you and others may need it.
+ *
+ * @param json - JSON-like object you are searching in.
+ * @param jsonPointer - JSON Pointer string or object.
+ * @returns Value exists or not.
+ */
+export const valueExistsAtJsonPointer = (json: Json, jsonPointer: JsonPointer | string): boolean => {
+  try {
+    getValueAtJsonPointer(json, jsonPointer);
+  } catch (error: unknown) {
+    if (error instanceof PointerReferencesNonexistentValue) {
+      return false;
+    }
+
+    throw error;
+  }
+
+  return true;
+};
