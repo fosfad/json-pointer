@@ -157,7 +157,7 @@ console.log(unescapedReferenceToken3); // Output: hello/world
 
 Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures, like those returned by [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) method. If these functions meet [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined), [`Function`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) or [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) types or [`Infinity`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity) and [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) numbers, then behavior is not clear because these types and values are not explicitly supported by the library. It may be changed in the future, so you may [create an issue](https://github.com/fosfad/json-pointer/issues) describing your use case why you and others may need it.
 
-#### `getValueByJsonPointer` function
+#### `getValueAtJsonPointer` function
 
 Gets value from JSON by JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns JSON value resolved by given Pointer.
 
@@ -169,7 +169,7 @@ Usage example:
 import {
   JsonPointer,
   createStringFromJsonPointer,
-  getValueByJsonPointer,
+  getValueAtJsonPointer,
   PointerReferencesNonexistentValue,
 } from '@fosfad/json-pointer';
 
@@ -181,18 +181,18 @@ const json = {
   },
 };
 
-console.log(getValueByJsonPointer(json, '/')); // Output: { song: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] } }
-console.log(getValueByJsonPointer(json, '/song')); // Output: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] }
-console.log(getValueByJsonPointer(json, '/song')); // Output: State Azure
-console.log(getValueByJsonPointer(json, '/song/tags')); // Output: [ 'ambient', 'drone' ]
-console.log(getValueByJsonPointer(json, '/song/tags/1')); // Output: drone
+console.log(getValueAtJsonPointer(json, '/')); // Output: { song: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] } }
+console.log(getValueAtJsonPointer(json, '/song')); // Output: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] }
+console.log(getValueAtJsonPointer(json, '/song')); // Output: State Azure
+console.log(getValueAtJsonPointer(json, '/song/tags')); // Output: [ 'ambient', 'drone' ]
+console.log(getValueAtJsonPointer(json, '/song/tags/1')); // Output: drone
 
 const jsonPointer = createStringFromJsonPointer('/song/tags/1');
 
-console.log(getValueByJsonPointer(json, jsonPointer)); // Output: drone
+console.log(getValueAtJsonPointer(json, jsonPointer)); // Output: drone
 
 try {
-  getValueByJsonPointer(json, '/foo/bar');
+  getValueAtJsonPointer(json, '/foo/bar');
 } catch (error: unknown) {
   if (error instanceof PointerReferencesNonexistentValue) {
     const jsonPointerString = createStringFromJsonPointer(error.jsonPointer);

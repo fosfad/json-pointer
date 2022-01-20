@@ -50,7 +50,7 @@ export class PointerReferencesNonexistentValue extends Error {
  * @throws PointerReferencesNonexistentValue
  * If JSON Pointer references a nonexistent value.
  */
-export const getValueByJsonPointer = (
+export const getValueAtJsonPointer = (
   json: Json,
   jsonPointer: JsonPointer | string,
 ): Json => {
