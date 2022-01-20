@@ -48,12 +48,9 @@ describe('isValidJsonPointer function', () => {
   });
 
   describe('Invalid JSON pointers', () => {
-    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])(
-      'JSON Pointer `%s`',
-      (jsonPointerString) => {
-        expect(isValidJsonPointer(jsonPointerString)).toBe(false);
-      },
-    );
+    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])('JSON Pointer `%s`', (jsonPointerString) => {
+      expect(isValidJsonPointer(jsonPointerString)).toBe(false);
+    });
   });
 });
 
@@ -103,14 +100,11 @@ describe('parseJsonPointerFromString function', () => {
   });
 
   describe('InvalidPointerSyntax error', () => {
-    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])(
-      'JSON Pointer `%s`',
-      (jsonPointer) => {
-        expect(() => {
-          parseJsonPointerFromString(jsonPointer);
-        }).toThrowError(InvalidPointerSyntax);
-      },
-    );
+    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])('JSON Pointer `%s`', (jsonPointer) => {
+      expect(() => {
+        parseJsonPointerFromString(jsonPointer);
+      }).toThrowError(InvalidPointerSyntax);
+    });
   });
 });
 

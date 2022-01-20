@@ -30,10 +30,7 @@
         "default": "generic"
       }
     ],
-    "@typescript-eslint/consistent-indexed-object-style": [
-      "error",
-      "index-signature"
-    ],
+    "@typescript-eslint/consistent-indexed-object-style": ["error", "index-signature"],
     "@typescript-eslint/consistent-type-assertions": [
       "error",
       {
@@ -42,10 +39,7 @@
       }
     ],
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
-      { "prefer": "type-imports" }
-    ],
+    "@typescript-eslint/consistent-type-imports": ["warn", { "prefer": "type-imports" }],
     "@typescript-eslint/member-ordering": ["warn"],
     "@typescript-eslint/method-signature-style": ["warn"],
     "@typescript-eslint/sort-type-union-intersection-members": ["warn"],

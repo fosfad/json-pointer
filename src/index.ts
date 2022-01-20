@@ -7,8 +7,4 @@ export {
   unescapeReferenceToken,
   isValidJsonPointer,
 } from './jsonPointer';
-export {
-  Json,
-  PointerReferencesNonexistentValue,
-  getValueAtJsonPointer,
-} from './jsonPointerProcessor';
+export { Json, PointerReferencesNonexistentValue, getValueAtJsonPointer } from './jsonPointerProcessor';

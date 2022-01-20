@@ -1,8 +1,5 @@
 import type { JsonPointer } from './jsonPointer';
-import {
-  createStringFromJsonPointer,
-  parseJsonPointerFromString,
-} from './jsonPointer';
+import { createStringFromJsonPointer, parseJsonPointerFromString } from './jsonPointer';
 
 export type Json = JsonArray | JsonObject | boolean | number | string | null;
 type JsonArray = Array<Json>;
@@ -12,14 +9,9 @@ export class PointerReferencesNonexistentValue extends Error {
   public readonly jsonPointer: JsonPointer;
   public readonly nonexistentValueJsonPointer: JsonPointer;
 
-  constructor(
-    jsonPointer: JsonPointer,
-    nonexistentValueJsonPointer: JsonPointer,
-  ) {
+  constructor(jsonPointer: JsonPointer, nonexistentValueJsonPointer: JsonPointer) {
     const jsonPointerString = createStringFromJsonPointer(jsonPointer);
-    const nonexistentValueJsonPointerString = createStringFromJsonPointer(
-      nonexistentValueJsonPointer,
-    );
+    const nonexistentValueJsonPointerString = createStringFromJsonPointer(nonexistentValueJsonPointer);
 
     super(
       `JSON Pointer ${jsonPointerString} is not valid because it references a nonexistent value: ${nonexistentValueJsonPointerString}`,
@@ -50,30 +42,18 @@ export class PointerReferencesNonexistentValue extends Error {
  * @throws PointerReferencesNonexistentValue
  * If JSON Pointer references a nonexistent value.
  */
-export const getValueAtJsonPointer = (
-  json: Json,
-  jsonPointer: JsonPointer | string,
-): Json => {
+export const getValueAtJsonPointer = (json: Json, jsonPointer: JsonPointer | string): Json => {
   const jsonPointerObject: JsonPointer =
-    typeof jsonPointer === 'string'
-      ? parseJsonPointerFromString(jsonPointer)
-      : jsonPointer;
+    typeof jsonPointer === 'string' ? parseJsonPointerFromString(jsonPointer) : jsonPointer;
 
   let currentlyReferencedValue = json;
 
-  for (const [
-    referenceTokenIndex,
-    referenceToken,
-  ] of jsonPointerObject.referenceTokens.entries()) {
+  for (const [referenceTokenIndex, referenceToken] of jsonPointerObject.referenceTokens.entries()) {
     let foundReferencedValue: Json | undefined = undefined;
 
     // check is array
-    if (
-      /^(?:0|[1-9][0-9]*)$/.test(referenceToken) &&
-      Array.isArray(currentlyReferencedValue)
-    ) {
-      foundReferencedValue =
-        currentlyReferencedValue[parseInt(referenceToken, 10)];
+    if (/^(?:0|[1-9][0-9]*)$/.test(referenceToken) && Array.isArray(currentlyReferencedValue)) {
+      foundReferencedValue = currentlyReferencedValue[parseInt(referenceToken, 10)];
     }
 
     // check is object
@@ -81,22 +61,15 @@ export const getValueAtJsonPointer = (
       currentlyReferencedValue !== null &&
       typeof currentlyReferencedValue === 'object' &&
       !Array.isArray(currentlyReferencedValue) &&
-      Object.prototype.hasOwnProperty.call(
-        currentlyReferencedValue,
-        referenceToken,
-      )
+      Object.prototype.hasOwnProperty.call(currentlyReferencedValue, referenceToken)
     ) {
       foundReferencedValue = currentlyReferencedValue[referenceToken];
     }
 
     if (foundReferencedValue === undefined) {
       throw new PointerReferencesNonexistentValue(jsonPointerObject, {
-        referenceTokens: jsonPointerObject.referenceTokens.slice(
-          0,
-          referenceTokenIndex + 1,
-        ),
-        uriFragmentIdentifierRepresentation:
-          jsonPointerObject.uriFragmentIdentifierRepresentation,
+        referenceTokens: jsonPointerObject.referenceTokens.slice(0, referenceTokenIndex + 1),
+        uriFragmentIdentifierRepresentation: jsonPointerObject.uriFragmentIdentifierRepresentation,
       });
     }
 

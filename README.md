@@ -62,10 +62,7 @@ Usage examples:
 ```typescript
 import { createStringFromJsonPointer } from '@fosfad/json-pointer';
 
-const jsonPointerString = createStringFromJsonPointer(
-  ['foo', 'bar', 'hello world'],
-  false,
-);
+const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world'], false);
 
 console.log(jsonPointerString); // Output: /foo/bar/hello world
 ```
@@ -73,10 +70,7 @@ console.log(jsonPointerString); // Output: /foo/bar/hello world
 ```typescript
 import { createStringFromJsonPointer } from '@fosfad/json-pointer';
 
-const jsonPointerString = createStringFromJsonPointer(
-  ['foo', 'bar', 'hello world'],
-  true,
-);
+const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world'], true);
 
 console.log(jsonPointerString); // Output: #/foo/bar/hello%20world
 ```
@@ -215,13 +209,9 @@ try {
 } catch (error: unknown) {
   if (error instanceof PointerReferencesNonexistentValue) {
     const jsonPointerString = createStringFromJsonPointer(error.jsonPointer);
-    const nonexistentValueJsonPointerString = createStringFromJsonPointer(
-      error.nonexistentValueJsonPointer,
-    );
+    const nonexistentValueJsonPointerString = createStringFromJsonPointer(error.nonexistentValueJsonPointer);
 
-    console.log(
-      `Pointer ${jsonPointerString} references nonexistent value: ${nonexistentValueJsonPointerString}`,
-    );
+    console.log(`Pointer ${jsonPointerString} references nonexistent value: ${nonexistentValueJsonPointerString}`);
   }
 }
 ```
