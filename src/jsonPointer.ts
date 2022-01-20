@@ -84,19 +84,21 @@ export const parseJsonPointerFromString = (
 export const createStringFromJsonPointer = (
   jsonPointer: JsonPointer,
 ): string => {
-  const jsonPointerString =
-    '/' +
-    jsonPointer.referenceTokens
-      .map((referenceToken): string => {
-        return unescapeReferenceToken(
-          referenceToken,
-          jsonPointer.uriFragmentIdentifierRepresentation,
-        );
-      })
-      .join('/');
+  let jsonPointerString = jsonPointer.referenceTokens
+    .map((referenceToken): string => {
+      return unescapeReferenceToken(
+        referenceToken,
+        jsonPointer.uriFragmentIdentifierRepresentation,
+      );
+    })
+    .join('/');
+
+  if (jsonPointer.referenceTokens.length > 0) {
+    jsonPointerString = '/' + jsonPointerString;
+  }
 
   if (jsonPointer.uriFragmentIdentifierRepresentation) {
-    return '#' + jsonPointerString;
+    jsonPointerString = '#' + jsonPointerString;
   }
 
   return jsonPointerString;
