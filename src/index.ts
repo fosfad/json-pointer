@@ -5,6 +5,7 @@ export {
   createStringFromJsonPointer,
   escapeReferenceToken,
   unescapeReferenceToken,
+  isValidJsonPointer,
 } from './jsonPointer';
 export {
   Json,

@@ -3,7 +3,59 @@ import {
   createStringFromJsonPointer,
   InvalidPointerSyntax,
   parseJsonPointerFromString,
+  isValidJsonPointer,
 } from '../src/jsonPointer';
+
+describe('isValidJsonPointer function', () => {
+  describe('Valid JSON pointers', () => {
+    describe('JSON String Representation of JSON Pointers', () => {
+      test.each<[string]>([
+        [''],
+        ['/foo'],
+        ['/foo/0'],
+        ['/'],
+        ['/a~1b'],
+        ['/c%d'],
+        ['/e^f'],
+        ['/g|h'],
+        ['/i\\j'],
+        ['/k"l'],
+        ['/ '],
+        ['/m~0n'],
+      ])('JSON Pointer `%s`', (jsonPointerString) => {
+        expect(isValidJsonPointer(jsonPointerString)).toBe(true);
+      });
+    });
+
+    describe('URI Fragment Identifier Representation of JSON Pointers', () => {
+      test.each<[string]>([
+        ['#'],
+        ['#/foo'],
+        ['#/foo/0'],
+        ['#/'],
+        ['#/a~1b'],
+        ['#/c%25d'],
+        ['#/e%5Ef'],
+        ['#/g%7Ch'],
+        ['#/i%5Cj'],
+        ['#/k%22l'],
+        ['#/%20'],
+        ['#/m~0n'],
+      ])('JSON Pointer `%s`', (jsonPointerString) => {
+        expect(isValidJsonPointer(jsonPointerString)).toBe(true);
+      });
+    });
+  });
+
+  describe('Invalid JSON pointers', () => {
+    test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])(
+      'JSON Pointer `%s`',
+      (jsonPointerString) => {
+        expect(isValidJsonPointer(jsonPointerString)).toBe(false);
+      },
+    );
+  });
+});
 
 describe('parseJsonPointerFromString function', () => {
   describe('JSON String Representation of JSON Pointers', () => {

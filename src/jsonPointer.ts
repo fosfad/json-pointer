@@ -29,6 +29,24 @@ export type JsonPointer = {
 };
 
 /**
+ * Validates input string to be valid JSON Pointer.
+ *
+ * @param jsonPointerString - JSON Pointer string.
+ * @returns Is JSON Pointer valid or not.
+ */
+export const isValidJsonPointer = (jsonPointerString: string): boolean => {
+  let jsonPointer = jsonPointerString;
+
+  const uriFragmentIdentifierRepresentation = jsonPointerString.startsWith('#');
+
+  if (uriFragmentIdentifierRepresentation) {
+    jsonPointer = jsonPointer.substring(1); // remove `#` symbol from beginning of the string
+  }
+
+  return jsonPointer.length === 0 || jsonPointer.startsWith('/');
+};
+
+/**
  * Parses input string into `JsonPointer` object.
  *
  * @param jsonPointerString - JSON Pointer string.
@@ -40,6 +58,10 @@ export type JsonPointer = {
 export const parseJsonPointerFromString = (
   jsonPointerString: string,
 ): JsonPointer => {
+  if (!isValidJsonPointer(jsonPointerString)) {
+    throw new InvalidPointerSyntax(jsonPointerString);
+  }
+
   let jsonPointer = jsonPointerString;
 
   const uriFragmentIdentifierRepresentation = jsonPointerString.startsWith('#');
@@ -53,10 +75,6 @@ export const parseJsonPointerFromString = (
       referenceTokens: [],
       uriFragmentIdentifierRepresentation,
     };
-  }
-
-  if (!jsonPointer.startsWith('/')) {
-    throw new InvalidPointerSyntax(jsonPointer);
   }
 
   const referenceTokens = jsonPointer

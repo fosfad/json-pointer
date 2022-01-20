@@ -81,6 +81,23 @@ const jsonPointerString = createStringFromJsonPointer(
 console.log(jsonPointerString); // Output: #/foo/bar/hello%20world
 ```
 
+#### `isValidJsonPointer` function
+
+Validates input string to be valid JSON Pointer.
+
+Usage examples:
+
+```typescript
+import { isValidJsonPointer } from '@fosfad/json-pointer';
+
+console.log(isValidJsonPointer('')); // Output: true
+console.log(isValidJsonPointer('/')); // Output: true
+console.log(isValidJsonPointer('#')); // Output: true
+console.log(isValidJsonPointer('#/')); // Output: true
+console.log(isValidJsonPointer('foo')); // Output: false
+console.log(isValidJsonPointer('#foo')); // Output: false
+```
+
 #### `escapeReferenceToken` function
 
 Escapes reference token according to the specification.
