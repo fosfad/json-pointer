@@ -14,7 +14,7 @@ export class PointerReferencesNonexistentValue extends Error {
     const nonexistentValueJsonPointerString = createStringFromJsonPointer(nonexistentValueJsonPointer);
 
     super(
-      `JSON Pointer ${jsonPointerString} is not valid because it references a nonexistent value: ${nonexistentValueJsonPointerString}`,
+      `JSON Pointer "${jsonPointerString}" is not valid because it references a nonexistent value: "${nonexistentValueJsonPointerString}"`,
     );
 
     this.jsonPointer = jsonPointer;

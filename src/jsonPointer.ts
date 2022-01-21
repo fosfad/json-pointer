@@ -1,6 +1,6 @@
 export class InvalidPointerSyntax extends Error {
   constructor(public readonly invalidJsonPointer: string) {
-    super(`JSON Pointer ${invalidJsonPointer} has invalid pointer syntax`);
+    super(`JSON Pointer "${invalidJsonPointer}" has invalid pointer syntax`);
 
     Object.setPrototypeOf(this, InvalidPointerSyntax.prototype);
   }
