@@ -106,6 +106,10 @@ describe('Custom test cases', () => {
       });
 
       expect(error).toBeInstanceOf(PointerReferencesNonexistentValue);
+      expect(error).toHaveProperty(
+        'message',
+        `JSON Pointer "${jsonPointerString}" is not valid because it references a nonexistent value: "${nonexistentValueJsonPointerString}"`,
+      );
       expect(error).toHaveProperty('jsonPointer', parseJsonPointerFromString(jsonPointerString));
       expect(error).toHaveProperty(
         'nonexistentValueJsonPointer',

@@ -5,6 +5,7 @@ import {
   parseJsonPointerFromString,
   isValidJsonPointer,
 } from '../src/jsonPointer';
+import { getError } from './utils';
 
 describe('isValidJsonPointer function', () => {
   describe('Valid JSON pointers', () => {
@@ -101,9 +102,13 @@ describe('parseJsonPointerFromString function', () => {
 
   describe('InvalidPointerSyntax error', () => {
     test.each<[string]>([['foo'], ['#foo'], ['foo/'], ['#foo/'], ['##/']])('JSON Pointer `%s`', (jsonPointerString) => {
-      expect(() => {
+      const error = getError(() => {
         parseJsonPointerFromString(jsonPointerString);
-      }).toThrowError(InvalidPointerSyntax);
+      });
+
+      expect(error).toBeInstanceOf(InvalidPointerSyntax);
+      expect(error).toHaveProperty('message', `JSON Pointer "${jsonPointerString}" has invalid pointer syntax`);
+      expect(error).toHaveProperty('invalidJsonPointer', jsonPointerString);
     });
   });
 });
