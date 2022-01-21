@@ -41,7 +41,7 @@ import { parseJsonPointerFromString } from '@fosfad/json-pointer';
 const jsonPointer = parseJsonPointerFromString('/foo/bar/hello world');
 
 console.log(jsonPointer.referenceTokens); // Output: [ 'foo', 'bar', 'hello world' ]
-console.log(jsonPointer.usesUriFragmentIdentifierRepresentation); // Output: false
+console.log(jsonPointer.uriFragmentIdentifierRepresentation); // Output: false
 ```
 
 ```typescript
@@ -50,7 +50,7 @@ import { parseJsonPointerFromString } from '@fosfad/json-pointer';
 const jsonPointer = parseJsonPointerFromString('#/foo/bar/hello%20world');
 
 console.log(jsonPointer.referenceTokens); // Output: [ 'foo', 'bar' , 'hello world' ]
-console.log(jsonPointer.usesUriFragmentIdentifierRepresentation); // Output: true
+console.log(jsonPointer.uriFragmentIdentifierRepresentation); // Output: true
 ```
 
 #### `createStringFromJsonPointer` function
