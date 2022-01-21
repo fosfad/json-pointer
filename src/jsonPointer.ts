@@ -18,6 +18,25 @@ export type JsonPointer = {
 };
 
 /**
+ * Checks input variable is valid JSON Pointer object.
+ * This is type guard for `JsonPointer` type.
+ *
+ * @param value - Value of unknown type.
+ * @returns Is passed value valid `JsonPointer` type or not.
+ */
+export const isJsonPointer = (value: unknown): value is JsonPointer => {
+  const isObject = (obj: unknown): obj is Partial<Record<keyof JsonPointer, unknown>> => {
+    return typeof obj === 'object' && obj !== null;
+  };
+
+  return (
+    isObject(value) &&
+    Array.isArray(value.referenceTokens) &&
+    value.referenceTokens.every((referenceToken) => typeof referenceToken === 'string')
+  );
+};
+
+/**
  * Validates input string to be valid JSON Pointer.
  *
  * @param jsonPointerString - JSON Pointer string.

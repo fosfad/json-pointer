@@ -4,6 +4,7 @@ import {
   InvalidPointerSyntax,
   parseJsonPointerFromString,
   isValidJsonPointer,
+  isJsonPointer,
 } from '../src/jsonPointer';
 import { getError } from './utils';
 
@@ -89,5 +90,21 @@ describe('createStringFromJsonPointer function', () => {
         referenceTokens,
       }),
     ).toBe(expectedJsonPointerString);
+  });
+});
+
+describe('isJsonPointer function', () => {
+  test.each<[Array<unknown>, boolean]>([
+    [[], true],
+    [['', ''], true],
+    [['abc', 'def'], true],
+    [[123], false],
+    [[true], false],
+  ])('Reference tokens `%p`', (referenceTokens, expectedIsValid) => {
+    expect(
+      isJsonPointer({
+        referenceTokens,
+      }),
+    ).toBe(expectedIsValid);
   });
 });

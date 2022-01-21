@@ -1,4 +1,5 @@
 export {
+  isJsonPointer,
   JsonPointer,
   InvalidPointerSyntax,
   parseJsonPointerFromString,
