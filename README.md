@@ -76,7 +76,9 @@ Usage examples:
 ```typescript
 import { createStringFromJsonPointer } from '@fosfad/json-pointer';
 
-const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world']);
+const jsonPointerString = createStringFromJsonPointer({
+  referenceTokens: ['foo', 'bar', 'hello world'],
+});
 
 console.log(jsonPointerString); // Output: /foo/bar/hello world
 ```
@@ -154,7 +156,7 @@ Usage examples:
 ```typescript
 import {
   JsonPointer,
-  createStringFromJsonPointer,
+  parseJsonPointerFromString,
   getValueAtJsonPointer,
   PointerReferencesNonexistentValue,
 } from '@fosfad/json-pointer';
@@ -167,7 +169,7 @@ const json = {
   },
 };
 
-console.log(getValueAtJsonPointer(json, createStringFromJsonPointer('/song/tags/1'))); // Output: drone
+console.log(getValueAtJsonPointer(json, parseJsonPointerFromString('/song/tags/1'))); // Output: drone
 
 console.log(getValueAtJsonPointer(json, '')); // Output: { song: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] } }
 console.log(getValueAtJsonPointer(json, '/song')); // Output: { author: 'State Azure', title: 'Chill Impromtu', tags: [ 'ambient', 'drone' ] }
@@ -209,7 +211,14 @@ const json = {
   },
 };
 
-console.log(valueExistsAtJsonPointer(json, createStringFromJsonPointer('/song/tags/1'))); // Output: true
+console.log(
+  valueExistsAtJsonPointer(
+    json,
+    createStringFromJsonPointer({
+      referenceTokens: ['song', 'tags', '1'],
+    }),
+  ),
+); // Output: true
 
 console.log(valueExistsAtJsonPointer(json, '')); // Output: true
 console.log(valueExistsAtJsonPointer(json, '/song')); // Output: true
