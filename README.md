@@ -6,6 +6,31 @@ If you are looking for Relative JSON Pointer implementation, check out [@fosfad/
 
 **At this moment the package is not stable.** We are thinking and experimenting with its design and API. Breaking changes are possible. Do not use it in production!
 
+# What is JSON Pointer
+
+JSON Pointer defines a string syntax for identifying a specific value within a JSON document.
+
+Take a look at following JSON document:
+
+```json
+{
+  "song": {
+    "author": "State Azure",
+    "title": "Fragments",
+    "tags": ["ambient", "drone"]
+  }
+}
+```
+
+If we need to point to `"Fragments"` value, JSON Pointer will look like `/song/title`. If we want to point to `"drone"` value, then JSON Pointer will look like `/song/tags/1`.
+
+## JSON String Representation and URI Fragment Identifier Representation
+
+JSON Pointer may have 2 representations: **JSON String Representation** and **URI Fragment Identifier Representation**:
+
+- **JSON String Representation** means JSON Pointer string should be formatted as a value suitable for being placed into JSON strings: `{"someFieldThatContainsPointer": "/song/tags/1"}`. All instances of quotation mark `"`, reverse solidus `\`, and control (%x00-1F) characters must be escaped.
+- **URI Fragment Identifier Representation** means JSON Pointer string should be formatted as a value suitable for being placed into URI fragment: `https://example.com/song.json#/song/tags/1`. It starts with `#` and percent-encoding is applied to some characters that are not allowed within URI fragments.
+
 # Usage
 
 ## Installation
