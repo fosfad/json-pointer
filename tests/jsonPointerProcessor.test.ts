@@ -23,9 +23,6 @@ describe('Positive test cases from the specification', () => {
     'm~n': 8,
   };
 
-  /**
-   * JSON String Representation of JSON Pointers.
-   */
   test.each<[string, unknown]>([
     ['', jsonHaystack],
     ['/foo', ['bar', 'baz']],
@@ -43,27 +40,6 @@ describe('Positive test cases from the specification', () => {
     expect(isValidJsonPointer(jsonPointerString)).toBe(true);
     expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString))).toEqual(expectedValue);
   });
-
-  /**
-   * URI Fragment Identifier Representation of JSON Pointers.
-   */
-  test.each<[string, unknown]>([
-    ['#', jsonHaystack],
-    ['#/foo', ['bar', 'baz']],
-    ['#/foo/0', 'bar'],
-    ['#/', 0],
-    ['#/a~1b', 1],
-    ['#/c%25d', 2],
-    ['#/e%5Ef', 3],
-    ['#/g%7Ch', 4],
-    ['#/i%5Cj', 5],
-    ['#/k%22l', 6],
-    ['#/%20', 7],
-    ['#/m~0n', 8],
-  ])('JSON Pointer `%s`', (jsonPointerString, expectedValue) => {
-    expect(valueExistsAtJsonPointer(jsonHaystack, jsonPointerString)).toBe(true);
-    expect(getValueAtJsonPointer(jsonHaystack, parseJsonPointerFromString(jsonPointerString))).toEqual(expectedValue);
-  });
 });
 
 describe('Custom test cases', () => {
@@ -75,9 +51,6 @@ describe('Custom test cases', () => {
   };
 
   describe('Positive test cases', () => {
-    /**
-     * JSON String Representation of JSON Pointers.
-     */
     test.each<[string, unknown]>([
       ['/foo/1', 'bar'],
       ['/foo/5', 'baz'],
@@ -88,9 +61,6 @@ describe('Custom test cases', () => {
   });
 
   describe('Negative test cases', () => {
-    /**
-     * JSON String Representation of JSON Pointers.
-     */
     test.each<[string, string]>([
       ['/foo/-1', '/foo/-1'],
       ['/foo/', '/foo/'],

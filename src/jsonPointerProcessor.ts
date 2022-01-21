@@ -62,7 +62,6 @@ export const getValueAtJsonPointer = (json: Json, jsonPointer: JsonPointer | str
     if (foundReferencedValue === undefined) {
       throw new PointerReferencesNonexistentValue(jsonPointerObject, {
         referenceTokens: jsonPointerObject.referenceTokens.slice(0, referenceTokenIndex + 1),
-        uriFragmentIdentifierRepresentation: jsonPointerObject.uriFragmentIdentifierRepresentation,
       });
     }
 

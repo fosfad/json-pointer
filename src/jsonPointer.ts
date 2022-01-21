@@ -15,15 +15,6 @@ export type JsonPointer = {
    * Empty array means JSON Pointer points to the whole document.
    */
   referenceTokens: Array<string>;
-
-  /**
-   * Does this JSON Pointer use URI Fragment Identifier Representation or not.
-   * If value is `true`, JSON Pointer string representation will be prepended with `#`
-   * and percent-encoding will be applied to some characters.
-   *
-   * @see {@link https://datatracker.ietf.org/doc/html/rfc6901#section-6|URI Fragment Identifier Representation}
-   */
-  uriFragmentIdentifierRepresentation: boolean;
 };
 
 /**
@@ -33,15 +24,7 @@ export type JsonPointer = {
  * @returns Is JSON Pointer valid or not.
  */
 export const isValidJsonPointer = (jsonPointerString: string): boolean => {
-  let jsonPointer = jsonPointerString;
-
-  const uriFragmentIdentifierRepresentation = jsonPointerString.startsWith('#');
-
-  if (uriFragmentIdentifierRepresentation) {
-    jsonPointer = jsonPointer.substring(1); // remove `#` symbol from beginning of the string
-  }
-
-  return jsonPointer.length === 0 || jsonPointer.startsWith('/');
+  return jsonPointerString.length === 0 || jsonPointerString.startsWith('/');
 };
 
 /**
@@ -58,31 +41,21 @@ export const parseJsonPointerFromString = (jsonPointerString: string): JsonPoint
     throw new InvalidPointerSyntax(jsonPointerString);
   }
 
-  let jsonPointer = jsonPointerString;
-
-  const uriFragmentIdentifierRepresentation = jsonPointerString.startsWith('#');
-
-  if (uriFragmentIdentifierRepresentation) {
-    jsonPointer = jsonPointer.substring(1); // remove `#` symbol from beginning of the string
-  }
-
-  if (jsonPointer.length === 0) {
+  if (jsonPointerString.length === 0) {
     return {
       referenceTokens: [],
-      uriFragmentIdentifierRepresentation,
     };
   }
 
-  const referenceTokens = jsonPointer
+  const referenceTokens = jsonPointerString
     .substring(1) // remove `/` symbol from beginning of the string
     .split('/')
     .map((referenceToken): string => {
-      return unescapeReferenceToken(referenceToken, uriFragmentIdentifierRepresentation);
+      return unescapeReferenceToken(referenceToken);
     });
 
   return {
     referenceTokens,
-    uriFragmentIdentifierRepresentation,
   };
 };
 
@@ -95,16 +68,12 @@ export const parseJsonPointerFromString = (jsonPointerString: string): JsonPoint
 export const createStringFromJsonPointer = (jsonPointer: JsonPointer): string => {
   let jsonPointerString = jsonPointer.referenceTokens
     .map((referenceToken): string => {
-      return escapeReferenceToken(referenceToken, jsonPointer.uriFragmentIdentifierRepresentation);
+      return escapeReferenceToken(referenceToken);
     })
     .join('/');
 
   if (jsonPointer.referenceTokens.length > 0) {
     jsonPointerString = '/' + jsonPointerString;
-  }
-
-  if (jsonPointer.uriFragmentIdentifierRepresentation) {
-    jsonPointerString = '#' + jsonPointerString;
   }
 
   return jsonPointerString;
@@ -119,20 +88,10 @@ export const createStringFromJsonPointer = (jsonPointer: JsonPointer): string =>
  * 2. `~0` → `~`
  *
  * @param referenceToken - One reference token (also known as path segment).
- * @param uriFragmentIdentifierRepresentation - Is `true`, percent-decoding with `decodeURIComponent` will be applied.
  * @returns Unescaped reference token.
  */
-export const unescapeReferenceToken = (
-  referenceToken: string,
-  uriFragmentIdentifierRepresentation: boolean,
-): string => {
-  let escapedReferenceToken = referenceToken.replaceAll('~1', '/').replaceAll('~0', '~');
-
-  if (uriFragmentIdentifierRepresentation) {
-    escapedReferenceToken = decodeURIComponent(escapedReferenceToken);
-  }
-
-  return escapedReferenceToken;
+export const unescapeReferenceToken = (referenceToken: string): string => {
+  return referenceToken.replaceAll('~1', '/').replaceAll('~0', '~');
 };
 
 /**
@@ -144,15 +103,8 @@ export const unescapeReferenceToken = (
  * 2. `/` → `~1`
  *
  * @param referenceToken - One reference token (also known as path segment).
- * @param uriFragmentIdentifierRepresentation - If `true`, percent-encoding with `encodeURIComponent` will be applied.
  * @returns Escaped reference token.
  */
-export const escapeReferenceToken = (referenceToken: string, uriFragmentIdentifierRepresentation: boolean): string => {
-  let unescapedReferenceToken = referenceToken.replaceAll('~', '~0').replaceAll('/', '~1');
-
-  if (uriFragmentIdentifierRepresentation) {
-    unescapedReferenceToken = encodeURIComponent(unescapedReferenceToken);
-  }
-
-  return unescapedReferenceToken;
+export const escapeReferenceToken = (referenceToken: string): string => {
+  return referenceToken.replaceAll('~', '~0').replaceAll('/', '~1');
 };

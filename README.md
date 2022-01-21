@@ -1,6 +1,6 @@
 # JSON Pointer
 
-This package contains TypeScript implementation for [JavaScript Object Notation (JSON) Pointer (RFC 6901)](https://datatracker.ietf.org/doc/html/rfc6901), also known as **JSON Pointer**. All features described by the specification are supported, both representations of JSON Pointer supported too: **JSON String Representation** and **URI Fragment Identifier Representation**.
+This package contains TypeScript implementation for [JavaScript Object Notation (JSON) Pointer (RFC 6901)](https://datatracker.ietf.org/doc/html/rfc6901), also known as **JSON Pointer**.
 
 If you are looking for Relative JSON Pointer implementation, check out [@fosfad/relative-json-pointer](https://github.com/fosfad/relative-json-pointer) package.
 
@@ -45,10 +45,9 @@ npm install @fosfad/json-pointer
 
 #### Managing JSON Pointer
 
-The package exposes `JsonPointer` type. It's simple object with only 2 fields:
+The package exposes `JsonPointer` type. It's simple object with only 1 field:
 
 - `referenceTokens` (array of strings) - reference tokens separated by a `/` character, also known as path segments. Empty array means JSON Pointer points to the whole document
-- `uriFragmentIdentifierRepresentation` (boolean) - does this JSON Pointer use URI Fragment Identifier Representation. If value is `true`, JSON Pointer string representation will be prepended with `#` and percent-encoding will be applied to some characters.
 
 There is no need to build this object manually, there are some helper functions described below.
 
@@ -66,16 +65,6 @@ import { parseJsonPointerFromString } from '@fosfad/json-pointer';
 const jsonPointer = parseJsonPointerFromString('/foo/bar/hello world');
 
 console.log(jsonPointer.referenceTokens); // Output: [ 'foo', 'bar', 'hello world' ]
-console.log(jsonPointer.uriFragmentIdentifierRepresentation); // Output: false
-```
-
-```typescript
-import { parseJsonPointerFromString } from '@fosfad/json-pointer';
-
-const jsonPointer = parseJsonPointerFromString('#/foo/bar/hello%20world');
-
-console.log(jsonPointer.referenceTokens); // Output: [ 'foo', 'bar' , 'hello world' ]
-console.log(jsonPointer.uriFragmentIdentifierRepresentation); // Output: true
 ```
 
 ##### `createStringFromJsonPointer` function
@@ -87,17 +76,9 @@ Usage examples:
 ```typescript
 import { createStringFromJsonPointer } from '@fosfad/json-pointer';
 
-const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world'], false);
+const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world']);
 
 console.log(jsonPointerString); // Output: /foo/bar/hello world
-```
-
-```typescript
-import { createStringFromJsonPointer } from '@fosfad/json-pointer';
-
-const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello world'], true);
-
-console.log(jsonPointerString); // Output: #/foo/bar/hello%20world
 ```
 
 ##### `isValidJsonPointer` function
@@ -111,10 +92,13 @@ import { isValidJsonPointer } from '@fosfad/json-pointer';
 
 console.log(isValidJsonPointer('')); // Output: true
 console.log(isValidJsonPointer('/')); // Output: true
-console.log(isValidJsonPointer('#')); // Output: true
-console.log(isValidJsonPointer('#/')); // Output: true
 console.log(isValidJsonPointer('foo')); // Output: false
 console.log(isValidJsonPointer('#foo')); // Output: false
+
+// The package does not support URI Fragment Identifier Representation,
+// see FAQ below
+console.log(isValidJsonPointer('#')); // Output: false
+console.log(isValidJsonPointer('#/')); // Output: false
 ```
 
 ##### `escapeReferenceToken` function
@@ -126,24 +110,14 @@ Transformations made by the function in following order:
 1. `~` → `~0`
 2. `/` → `~1`
 
-If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-decoding with `encodeURIComponent` will be applied too.
-
 Usage examples:
 
 ```typescript
 import { escapeReferenceToken } from '@fosfad/json-pointer';
 
-console.log(escapeReferenceToken('hello world', false)); // Output: hello world
-console.log(escapeReferenceToken('hello~world', false)); // Output: hello~0world
-console.log(escapeReferenceToken('hello/world', false)); // Output: hello~1world
-```
-
-```typescript
-import { escapeReferenceToken } from '@fosfad/json-pointer';
-
-console.log(escapeReferenceToken('hello world', true)); // Output: hello%20world
-console.log(escapeReferenceToken('hello~world', true)); // Output: hello~0world
-console.log(escapeReferenceToken('hello/world', true)); // Output: hello~1world
+console.log(escapeReferenceToken('hello world')); // Output: hello world
+console.log(escapeReferenceToken('hello~world')); // Output: hello~0world
+console.log(escapeReferenceToken('hello/world')); // Output: hello~1world
 ```
 
 ##### `unescapeReferenceToken` function
@@ -155,24 +129,14 @@ Transformations made by the function in following order:
 1. `~1` → `/`
 2. `~0` → `~`
 
-If second argument `uriFragmentIdentifierRepresentation` is `true`, percent-encoding with `decodeURIComponent` will be applied too.
-
 Usage examples:
 
 ```typescript
 import { unescapeReferenceToken } from '@fosfad/json-pointer';
 
-console.log(unescapeReferenceToken('hello%20world', false)); // Output: hello%20world
-console.log(unescapeReferenceToken('hello~0world', false)); // Output: hello~world
-console.log(unescapeReferenceToken('hello~1world', false)); // Output: hello/world
-```
-
-```typescript
-import { unescapeReferenceToken } from '@fosfad/json-pointer';
-
-console.log(unescapeReferenceToken('hello%20world', true)); // Output: hello world
-console.log(unescapeReferenceToken('hello~0world', true)); // Output: hello~world
-console.log(unescapeReferenceToken('hello~1world', true)); // Output: hello/world
+console.log(unescapeReferenceToken('hello%20world')); // Output: hello%20world
+console.log(unescapeReferenceToken('hello~0world')); // Output: hello~world
+console.log(unescapeReferenceToken('hello~1world')); // Output: hello/world
 ```
 
 #### Processing JSON documents
@@ -255,3 +219,9 @@ console.log(valueExistsAtJsonPointer(json, '/song/tags/1')); // Output: true
 
 console.log(valueExistsAtJsonPointer(json, '/foo/bar')); // Output: false
 ```
+
+### FAQ
+
+#### Is URI Fragment Identifier Representation supported?
+
+No. You should remove `#` from the beginning of the string and then decode string with [`decodeURI()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI) function.
