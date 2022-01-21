@@ -6,19 +6,14 @@ type JsonArray = Array<Json>;
 type JsonObject = { [property: string]: Json };
 
 export class PointerReferencesNonexistentValue extends Error {
-  public readonly jsonPointer: JsonPointer;
-  public readonly nonexistentValueJsonPointer: JsonPointer;
-
-  constructor(jsonPointer: JsonPointer, nonexistentValueJsonPointer: JsonPointer) {
-    const jsonPointerString = createStringFromJsonPointer(jsonPointer);
-    const nonexistentValueJsonPointerString = createStringFromJsonPointer(nonexistentValueJsonPointer);
-
+  constructor(public readonly jsonPointer: JsonPointer, public readonly nonexistentValueJsonPointer: JsonPointer) {
     super(
-      `JSON Pointer "${jsonPointerString}" is not valid because it references a nonexistent value: "${nonexistentValueJsonPointerString}"`,
+      `JSON Pointer "${createStringFromJsonPointer(
+        jsonPointer,
+      )}" is not valid because it references a nonexistent value: "${createStringFromJsonPointer(
+        nonexistentValueJsonPointer,
+      )}"`,
     );
-
-    this.jsonPointer = jsonPointer;
-    this.nonexistentValueJsonPointer = nonexistentValueJsonPointer;
   }
 }
 
