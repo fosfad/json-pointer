@@ -19,8 +19,6 @@ export class PointerReferencesNonexistentValue extends Error {
 
     this.jsonPointer = jsonPointer;
     this.nonexistentValueJsonPointer = nonexistentValueJsonPointer;
-
-    Object.setPrototypeOf(this, PointerReferencesNonexistentValue.prototype);
   }
 }
 
