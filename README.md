@@ -6,7 +6,7 @@ If you are looking for Relative JSON Pointer implementation, check out [@fosfad/
 
 **At this moment the package is not stable.** We are thinking and experimenting with its design and API. Breaking changes are possible. Do not use it in production!
 
-# What is JSON Pointer
+## What is JSON Pointer
 
 JSON Pointer defines a string syntax for identifying a specific value within a JSON document.
 
@@ -24,16 +24,16 @@ Take a look at following JSON document:
 
 If we need to point to `"Fragments"` value, JSON Pointer will look like `/song/title`. If we want to point to `"drone"` value, then JSON Pointer will look like `/song/tags/1`.
 
-## JSON String Representation and URI Fragment Identifier Representation
+### JSON String Representation and URI Fragment Identifier Representation
 
 JSON Pointer may have 2 representations: **JSON String Representation** and **URI Fragment Identifier Representation**:
 
 - **JSON String Representation** means JSON Pointer string should be formatted as a value suitable for being placed into JSON strings: `{"someFieldThatContainsPointer": "/song/tags/1"}`. All instances of quotation mark `"`, reverse solidus `\`, and control (%x00-1F) characters must be escaped.
 - **URI Fragment Identifier Representation** means JSON Pointer string should be formatted as a value suitable for being placed into URI fragment: `https://example.com/song.json#/song/tags/1`. It starts with `#` and percent-encoding is applied to some characters that are not allowed within URI fragments.
 
-# Usage
+## Usage
 
-## Installation
+### Installation
 
 This package is available in [npm Registry](https://www.npmjs.com/package/@fosfad/json-pointer):
 
@@ -41,9 +41,9 @@ This package is available in [npm Registry](https://www.npmjs.com/package/@fosfa
 npm install @fosfad/json-pointer
 ```
 
-## API
+### API
 
-### Managing JSON Pointer
+#### Managing JSON Pointer
 
 The package exposes `JsonPointer` type. It's simple object with only 2 fields:
 
@@ -52,7 +52,7 @@ The package exposes `JsonPointer` type. It's simple object with only 2 fields:
 
 There is no need to build this object manually, there are some helper functions described below.
 
-#### `parseJsonPointerFromString` function
+##### `parseJsonPointerFromString` function
 
 Parses input string into `JsonPointer` object.
 
@@ -78,7 +78,7 @@ console.log(jsonPointer.referenceTokens); // Output: [ 'foo', 'bar' , 'hello wor
 console.log(jsonPointer.uriFragmentIdentifierRepresentation); // Output: true
 ```
 
-#### `createStringFromJsonPointer` function
+##### `createStringFromJsonPointer` function
 
 Creates a string from `JsonPointer` object.
 
@@ -100,7 +100,7 @@ const jsonPointerString = createStringFromJsonPointer(['foo', 'bar', 'hello worl
 console.log(jsonPointerString); // Output: #/foo/bar/hello%20world
 ```
 
-#### `isValidJsonPointer` function
+##### `isValidJsonPointer` function
 
 Validates input string to be valid JSON Pointer.
 
@@ -117,7 +117,7 @@ console.log(isValidJsonPointer('foo')); // Output: false
 console.log(isValidJsonPointer('#foo')); // Output: false
 ```
 
-#### `escapeReferenceToken` function
+##### `escapeReferenceToken` function
 
 Escapes reference token according to the specification.
 
@@ -146,7 +146,7 @@ console.log(escapeReferenceToken('hello~world', true)); // Output: hello~0world
 console.log(escapeReferenceToken('hello/world', true)); // Output: hello~1world
 ```
 
-#### `unescapeReferenceToken` function
+##### `unescapeReferenceToken` function
 
 Unescapes reference token according to the specification.
 
@@ -175,11 +175,11 @@ console.log(unescapeReferenceToken('hello~0world', true)); // Output: hello~worl
 console.log(unescapeReferenceToken('hello~1world', true)); // Output: hello/world
 ```
 
-### Processing JSON documents
+#### Processing JSON documents
 
 Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures, like those returned by [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) method. If these functions meet [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined), [`Function`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) or [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) types or [`Infinity`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity) and [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) numbers, then behavior is not clear because these types and values are not explicitly supported by the library. It may be changed in the future, so you may [create an issue](https://github.com/fosfad/json-pointer/issues) describing your use case why you and others may need it.
 
-#### `getValueAtJsonPointer` function
+##### `getValueAtJsonPointer` function
 
 Gets value from JSON by JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns JSON value resolved by given Pointer.
 
@@ -223,7 +223,7 @@ try {
 }
 ```
 
-#### `valueExistsAtJsonPointer` function
+##### `valueExistsAtJsonPointer` function
 
 Checks value exists in JSON at given JSON Pointer. This method accepts JSON, JSON Pointer (it may be a string or `JsonPointer` object) and returns boolean that indicates does value exist or not.
 
