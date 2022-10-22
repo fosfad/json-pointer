@@ -79,6 +79,20 @@ export const parseJsonPointerFromString = (jsonPointerString: string): JsonPoint
 };
 
 /**
+ * Creates `JsonPointer` object from array of reference tokens.
+ *
+ * @param referenceTokens - array of reference tokens.
+ * @returns JSON Pointer object.
+ */
+export const createJsonPointerFromReferenceTokens = (referenceTokens: JsonPointer['referenceTokens']): JsonPointer => {
+  return {
+    referenceTokens: referenceTokens.map((referenceToken): string => {
+      return unescapeReferenceToken(referenceToken);
+    }),
+  };
+};
+
+/**
  * Creates a string from `JsonPointer` object.
  *
  * @param jsonPointer - JSON Pointer object.

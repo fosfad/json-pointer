@@ -169,6 +169,18 @@ console.log(
 ); // Output: false
 ```
 
+##### `createJsonPointerFromReferenceTokens` function
+
+Helper factory for creating JSON Pointer from array of strings (reference tokens).
+
+Usage examples:
+
+```typescript
+import { createJsonPointerFromReferenceTokens } from '@fosfad/json-pointer';
+
+console.log(createJsonPointerFromReferenceTokens(['a', 'b', 'c']));
+```
+
 #### Processing JSON documents
 
 Functions for processing JSON Pointers are designed to work only with JSON-like JavaScript structures, like those returned by [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) method. If these functions meet [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined), [`Function`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) or [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) types or [`Infinity`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity) and [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) numbers, then behavior is not clear because these types and values are not explicitly supported by the library. It may be changed in the future, so you may [create an issue](https://github.com/fosfad/json-pointer/issues) describing your use case why you and others may need it.
